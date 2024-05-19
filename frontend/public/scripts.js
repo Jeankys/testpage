@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const vuelo = { origen, destino, dia };
         console.log('Datos del vuelo a enviar:', vuelo);
 
-        fetch('http://localhost:3001/api/vuelos', {
+        fetch('https://testpage-t5aw.vercel.app/api/vuelos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -4,5 +4,12 @@
       "source": "/api/(.*)",
       "destination": "https://testpage-t5aw.vercel.app/api/$1"
     }
+  ],
+  "routes": [
+    {
+      "src": "/api/.*",
+      "methods": ["OPTIONS"], 
+      "dest": "/cors.js"
+    }
   ]
 }

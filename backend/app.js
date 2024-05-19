@@ -16,7 +16,10 @@ mongoose.connect('mongodb://localhost:27017/vuelos', {
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors()); // Habilita CORS
+app.use(cors({
+    origin: 'https://testpage-orpin.vercel.app',
+    optionsSuccessStatus: 200
+  }));
 
 // Endpoint para manejar las reservas de vuelos
 app.post('/api/vuelos', async (req, res) => {

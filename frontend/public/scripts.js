@@ -28,29 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function cargarVuelos() {
-        try {
-          const response = await fetch(API_URL);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          mostrarVuelos(data);
-        } catch (error) {
-          console.error('Error al cargar los vuelos:', error);
-        }
-    }
-
-    function mostrarVuelos(vuelos) {
-        const listaVuelos = document.getElementById('lista-vuelos');
-        listaVuelos.innerHTML = '';
-        vuelos.forEach(vuelo => {
-          const li = document.createElement('li');
-          li.textContent = `${vuelo.origen} - ${vuelo.destino} (${vuelo.fecha})`;
-          listaVuelos.appendChild(li);
-        });
-    }
-
     function agregarVueloALaLista(vuelo) {
         const li = document.createElement('li');
         li.innerHTML = `Origen: ${vuelo.origen}, Destino: ${vuelo.destino}, Día: ${vuelo.dia}`;
@@ -114,29 +91,21 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
       
-        document.getElementById('btn-ver-vuelos').addEventListener('click', () => {
-          const listaVuelos = document.getElementById('lista-vuelos');
-          if (listaVuelos.style.display === 'none' || listaVuelos.style.display === '') {
-            cargarVuelos();
-            listaVuelos.style.display = 'block';
-            document.getElementById('btn-ver-vuelos').textContent = 'Ocultar Todos Los Vuelos Agendados';
-          } else {
-            listaVuelos.style.display = 'none';
-            document.getElementById('btn-ver-vuelos').textContent = 'Ver Todos Los Vuelos Agendados';
-          }
-        });
-      });
-    
-    // Evento del botón para mostrar/ocultar los vuelos agendados
-    document.getElementById('btn-ver-vuelos').addEventListener('click', () => {
-        const listaVuelos = document.getElementById('lista-vuelos');
-        if (listaVuelos.style.display === 'none' || listaVuelos.style.display === '') {
-          cargarVuelos();
-          listaVuelos.style.display = 'block';
-          document.getElementById('btn-ver-vuelos').textContent = 'Ocultar Todos Los Vuelos Agendados';
+        const botonVerVuelos = document.getElementById('btn-ver-vuelos');
+        if (botonVerVuelos) {
+          botonVerVuelos.addEventListener('click', () => {
+            const listaVuelos = document.getElementById('lista-vuelos');
+            if (listaVuelos.style.display === 'none' || listaVuelos.style.display === '') {
+              cargarVuelos();
+              listaVuelos.style.display = 'block';
+              botonVerVuelos.textContent = 'Ocultar Todos Los Vuelos Agendados';
+            } else {
+              listaVuelos.style.display = 'none';
+              botonVerVuelos.textContent = 'Ver Todos Los Vuelos Agendados';
+            }
+          });
         } else {
-          listaVuelos.style.display = 'none';
-          document.getElementById('btn-ver-vuelos').textContent = 'Ver Todos Los Vuelos Agendados';
+          console.error('El botón con ID btn-ver-vuelos no se encontró en el DOM.');
         }
       });
 

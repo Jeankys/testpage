@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaVuelos = document.getElementById('listaVuelos');
     const mostrarVuelosBtn = document.getElementById('mostrarVuelos');
     const reservaForm = document.getElementById('reservaForm');
+    const API_URL = 'https://testpage-t5aw.vercel.app/api/vuelos';
 
     origenInput.addEventListener('input', () => actualizarSugerencias(origenInput, sugerenciasOrigen));
     destinoInput.addEventListener('input', () => actualizarSugerencias(destinoInput, sugerenciasDestino));
@@ -27,14 +28,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function cargarVuelos() {
-        fetch('http://localhost:3001/api/vuelos')
-            .then(response => response.json())
-            .then(vuelos => {
-                listaVuelos.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
-                vuelos.forEach(vuelo => agregarVueloALaLista(vuelo));
-            })
-            .catch(error => console.error('Error al cargar los vuelos:', error));
+    async function cargarVuelos() {
+        try {
+          const response = await fetch(API_URL);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          mostrarVuelos(data);
+        } catch (error) {
+          console.error('Error al cargar los vuelos:', error);
+        }
+    }
+
+    function mostrarVuelos(vuelos) {
+        const listaVuelos = document.getElementById('lista-vuelos');
+        listaVuelos.innerHTML = '';
+        vuelos.forEach(vuelo => {
+          const li = document.createElement('li');
+          li.textContent = `${vuelo.origen} - ${vuelo.destino} (${vuelo.fecha})`;
+          listaVuelos.appendChild(li);
+        });
     }
 
     function agregarVueloALaLista(vuelo) {
@@ -74,39 +88,18 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error en la petición:', error));
     });
 
-    document.getElementById('reservaForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        const origen = document.getElementById('origen').value;
-        const destino = document.getElementById('destino').value;
-        const dia = document.getElementById('dia').value;
-        
-        const vuelo = { origen, destino, dia };
-        console.log('Datos del vuelo a enviar:', vuelo);
-
-        fetch('http://localhost:3001/api/vuelos', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(vuelo)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Respuesta del servidor:', data);
-            agregarVueloALaLista(data);
-            limpiarFormulario(); // Limpiar el formulario después de la reserva exitosa
-        })
-        .catch(error => console.error('Error en la petición:', error));
-    });
+    
 
     // Evento del botón para mostrar/ocultar los vuelos agendados
-    mostrarVuelosBtn.addEventListener('click', function() {
+    document.getElementById('btn-ver-vuelos').addEventListener('click', () => {
+        const listaVuelos = document.getElementById('lista-vuelos');
         if (listaVuelos.style.display === 'none' || listaVuelos.style.display === '') {
-            cargarVuelos();
-            listaVuelos.style.display = 'block';
+          cargarVuelos();
+          listaVuelos.style.display = 'block';
+          document.getElementById('btn-ver-vuelos').textContent = 'Ocultar Todos Los Vuelos Agendados';
         } else {
-            listaVuelos.style.display = 'none';
+          listaVuelos.style.display = 'none';
+          document.getElementById('btn-ver-vuelos').textContent = 'Ver Todos Los Vuelos Agendados';
         }
-    });
+      });
 });

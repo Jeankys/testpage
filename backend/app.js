@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Vuelo = require('./models/vuelo');
 const cors = require('cors'); // Importa cors para manejar solicitudes desde el frontend
-
+const API_URL = 'https://testpage-t5aw.vercel.app/api/vuelos';
 const app = express();
 
 // Conectar a MongoDB
@@ -13,6 +13,40 @@ mongoose.connect('mongodb://localhost:27017/vuelos', {
 })
 .then(() => console.log('Conectado a MongoDB'))
 .catch(err => console.error('Error de conexión:', err));
+
+async function fetchVuelos() {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en la petición:', error);
+      throw error;
+    }
+  }
+  
+  async function saveVuelo(vuelo) {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(vuelo),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en la petición:', error);
+      throw error;
+    }
+  }
 
 // Middleware
 app.use(bodyParser.json());

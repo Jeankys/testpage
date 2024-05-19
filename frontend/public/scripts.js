@@ -88,8 +88,45 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error en la petición:', error));
     });
 
+    document.addEventListener('DOMContentLoaded', () => {
+        const API_URL = 'https://testpage-t5aw.vercel.app/api/vuelos';
+      
+        async function cargarVuelos() {
+          try {
+            const response = await fetch(API_URL);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            mostrarVuelos(data);
+          } catch (error) {
+            console.error('Error al cargar los vuelos:', error);
+          }
+        }
+      
+        function mostrarVuelos(vuelos) {
+          const listaVuelos = document.getElementById('lista-vuelos');
+          listaVuelos.innerHTML = '';
+          vuelos.forEach(vuelo => {
+            const li = document.createElement('li');
+            li.textContent = `${vuelo.origen} - ${vuelo.destino} (${vuelo.fecha})`;
+            listaVuelos.appendChild(li);
+          });
+        }
+      
+        document.getElementById('btn-ver-vuelos').addEventListener('click', () => {
+          const listaVuelos = document.getElementById('lista-vuelos');
+          if (listaVuelos.style.display === 'none' || listaVuelos.style.display === '') {
+            cargarVuelos();
+            listaVuelos.style.display = 'block';
+            document.getElementById('btn-ver-vuelos').textContent = 'Ocultar Todos Los Vuelos Agendados';
+          } else {
+            listaVuelos.style.display = 'none';
+            document.getElementById('btn-ver-vuelos').textContent = 'Ver Todos Los Vuelos Agendados';
+          }
+        });
+      });
     
-
     // Evento del botón para mostrar/ocultar los vuelos agendados
     document.getElementById('btn-ver-vuelos').addEventListener('click', () => {
         const listaVuelos = document.getElementById('lista-vuelos');
@@ -102,4 +139,5 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('btn-ver-vuelos').textContent = 'Ver Todos Los Vuelos Agendados';
         }
       });
+
 });

@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Vuelo = require('./models/vuelo');
-const cors = require('cors'); // Importa cors para manejar solicitudes desde el frontend
+const cors = require('cors');
 const API_URL = 'https://testpage-t5aw.vercel.app/api/vuelos';
 const app = express();
 
@@ -50,10 +50,7 @@ async function fetchVuelos() {
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors({
-    origin: 'https://testpage-orpin.vercel.app',
-    optionsSuccessStatus: 200
-  }));
+app.use(cors());
 
 // Endpoint para manejar las reservas de vuelos
 app.post('/api/vuelos', async (req, res) => {
